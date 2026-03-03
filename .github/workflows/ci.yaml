@@ -1,0 +1,38 @@
+name: Bug reproducer
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  symfony-7_3:
+    name: "Symfony 7.3 (PHP 8.3) — all tests should PASS"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - run: |
+          composer update \
+            --with symfony/serializer:7.3.* \
+            --with symfony/property-info:7.3.* \
+            --with symfony/property-access:7.3.*
+
+      - run: vendor/bin/phpunit
+
+  symfony-7_4:
+    name: "Symfony 7.4 (PHP 8.3) — 2 tests FAIL (bug)"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - run: composer update
+
+      - run: vendor/bin/phpunit
